@@ -1,3 +1,7 @@
+FROM alpine:3.20 AS dest
+
+RUN apk add gettext
+
 FROM curlimages/curl:latest AS curl
 
 ARG KUBECTL_VERSION=v1.23.0
@@ -12,7 +16,7 @@ RUN curl -LO https://get.helm.sh/${HELM_FILENAME}
 RUN tar -xzvf ${HELM_FILENAME}
 RUN mv ${HELM_PLATFORM}/helm ./
 
-FROM alpine:3.20
+FROM dest
 
 COPY --from=curl /dst/kubectl /usr/local/bin/
 COPY --from=curl /dst/helm /usr/local/bin/
